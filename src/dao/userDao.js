@@ -74,3 +74,17 @@ exports.deleteUserByEmail = catchAsyncError(async (email) => {
     }
 })
 
+exports.updatePassword = catchAsyncError(async(userId, newPassword)=>{
+    const { db, client } = await dbConnect()
+    try {
+        const users = db.collection("users")
+        const result = users.updateOne({ _id: new ObjectId(userId) }, {$set:{password:newPassword }})
+        if (result.acknowledged === true) {
+            console.info(` user with ${email} deleted successfuly`)
+            return true
+        }
+    }
+    finally {
+        await client.close()
+    }
+})
