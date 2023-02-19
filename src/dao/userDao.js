@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb")
 const catchAsyncError = require("../middlewares/catchAsyncError")
 const { dbConnect } = require("../utils/dbConnect")
 const { encryprtPassword } = require("../utils/userUtils")
@@ -21,20 +22,39 @@ exports.saveUser = catchAsyncError(async (newUser) => {
 })
 
 //Find user by email
-exports.findUserByEmail  = catchAsyncError(async(email)=>{
-    const {db, client}  = await dbConnect()
-    try{
-        const users  = db.collection("users")
-        const user  = await users.findOne({email})
-         if(!user){
+exports.findUserByEmail = catchAsyncError(async (email) => {
+    const { db, client } = await dbConnect()
+    try {
+        const users = db.collection("users")
+        const user = await users.findOne({ email })
+        if (!user) {
             console.info(`No user found with  email: ${email} `)
-            return ;
-         }
-         return user
+            return;
+        }
+        return user
 
 
     }
-    finally{
+    finally {
         await client.close()
     }
 })
+
+// find user by user id => _id
+exports.findUserById = catchAsyncError(async (userId) => {
+    const { db, client } = await dbConnect()
+    try {
+        const users = db.collection("users")
+        const user = users.findOne({ _id: new ObjectId(userId) })
+        if (!user) {
+            console.info(`No user found with id:  ${userId}`)
+            return;
+        }
+        return user
+
+    }
+    finally {
+        await client.close()
+    }
+})
+
