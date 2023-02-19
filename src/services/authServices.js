@@ -10,7 +10,7 @@ exports.createUser = catchAsyncError(async (firstName, lastName, email, password
     const result = await cloudinaryUpload(avatar)
     if (!result) {
         console.info("Something is wrong, Avatar image is not upload ")
-        return next(new ErrorHandler("File not uploaded correctly, something is wrong", 401))
+        return ;
     }
     const newUser = {
         firstName,
@@ -31,13 +31,13 @@ exports.login = catchAsyncError(async (email, password) => {
     const user = await findUserByEmail(email);
     if (!user) {
         console.info(`Invalid  email, try with corect email`)
-        return next(new ErrorHandler(`No user found with email: ${email}`, 401))
+     return ;
     }
     // check if the password provided with the  user password
     const isPasswordMatch = comparePassword(user, password);
     if (!isPasswordMatch) {
         console.info(`Password you entered  ${password} not correct, Enter again`)
-        return next(new ErrorHandler("Invalid email or password", 401))
+      return ;
     }
     return isPasswordMatch
 })
