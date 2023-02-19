@@ -13,3 +13,14 @@ const { generateToken } = require("../utils/userUtils")
    generateToken(user, 200, res)
     
  })
+ // Login => /api/v1/login
+ exports.login =catchAsyncError(async(req,res,next)=>{
+   const {email, password}  = req.body
+   const isUser = await login(email, password)
+   if(!isUser){
+      return next(new  ErrorHandler("Invalid  email or password", 400))
+   }
+   generateToken(user, 200, res)
+ })
+ 
+
