@@ -20,4 +20,21 @@ exports.saveUser = catchAsyncError(async (newUser) => {
 
 })
 
-// 
+//Find user by email
+exports.findUserByEmail  = catchAsyncError(async(email)=>{
+    const {db, client}  = await dbConnect()
+    try{
+        const users  = db.collection("users")
+        const user  = await users.findOne({email})
+         if(!user){
+            console.info(`No user found with  email: ${email} `)
+            return ;
+         }
+         return user
+
+
+    }
+    finally{
+        await client.close()
+    }
+})
