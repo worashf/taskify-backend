@@ -58,3 +58,19 @@ exports.findUserById = catchAsyncError(async (userId) => {
     }
 })
 
+// delete user by email =>  email
+exports.deleteUserByEmail = catchAsyncError(async (email) => {
+    const { db, client } = await dbConnect()
+    try {
+        const users = db.collection("users")
+        const result = users.deleteOne({ email: email })
+        if (result.acknowledged === true) {
+            console.info(` user with ${email} deleted successfuly`)
+            return true
+        }
+    }
+    finally {
+        await client.close()
+    }
+})
+
