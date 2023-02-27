@@ -1,7 +1,7 @@
 
 const { ObjectId}  = require("mongodb")
 const {dbConnect} = require("../utils/dbConnect")
-
+ const catchAsyncError = require("../middlewares/catchAsyncError")
 
 
 exports.saveProject =  async(newProject)=>{
@@ -30,8 +30,8 @@ exports.updateProject  =async(projectId, name, description)=>{
   
       const projects = db.collection("projects")
        const filter  = {_id: new ObjectId(projectId)}
-       const updateDoc  = {$set: {name, description}}
-       const  result  = await  projects.updateOne(filter, updateDoc)
+       const updates  = {$set: {name, description}}
+       const  result  = await  projects.updateOne(filter, updates)
        return  result
 
   }
@@ -40,6 +40,21 @@ exports.updateProject  =async(projectId, name, description)=>{
    await client.close()
   }
 }
+
+exports.changeProjectStatus  = catchAsyncError(async(projectId,projectStatus)=>{
+   const {client, db}  = await dbConnect()
+   try{
+    const projects = db.collection("projects")
+    const filter ={_id: new ObjectId(projectId)}
+    const updates = {$set :{status: projectStatus}}
+    const result  = await projects.updateOne(filter, updates)
+    return result
+   }
+   finally{
+    await client.close()
+   }
+})
+
 
 exports.deleteProject  = async(projectId) =>{
   const{client, db}  = await  dbConnect()
