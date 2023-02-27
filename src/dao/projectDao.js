@@ -55,7 +55,17 @@ exports.changeProjectStatus  = catchAsyncError(async(projectId,projectStatus)=>{
    }
 })
 
-
+exports.addMembers = catchAsyncError(async(projectId, userId)=>{
+  const{client, db} = await  dbConnect()
+  try{
+    const projects = db.collection("projects")
+    const result = await  projects.updateOne({_id: new ObjectId(projectId)},{$push:{members: new ObjectId(userId)}})
+    return result
+  }
+  finally{
+    await client.close()
+  }
+})
 exports.deleteProject  = async(projectId) =>{
   const{client, db}  = await  dbConnect()
   try{
