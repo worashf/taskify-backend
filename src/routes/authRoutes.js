@@ -5,7 +5,7 @@ const {signup, login, getUserDetails, editPassword} = require("../controllers/au
 
 router.route("/users/signup").post(signup)
 router.route("/users/login").post(login)
-router.route("/users/me").get(getUserDetails)
-router.route("/password/change").put(editPassword)
+router.route("/users/:id").get(getUserDetails)
+router.route("/users").put(editPassword)
 
 module.exports = router
