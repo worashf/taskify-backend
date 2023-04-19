@@ -1,7 +1,7 @@
 
 const { ObjectId}  = require("mongodb")
 const {dbConnect} = require("../utils/dbConnect")
- const catchAsyncError = require("../middlewares/catchAsyncError")
+
 
 
 exports.saveProject =  async(newProject)=>{
@@ -41,7 +41,7 @@ exports.updateProject  =async(projectId, name, description)=>{
   }
 }
 
-exports.changeProjectStatus  = catchAsyncError(async(projectId,projectStatus)=>{
+exports.changeProjectStatus  = async(projectId,projectStatus)=>{
    const {client, db}  = await dbConnect()
    try{
     const projects = db.collection("projects")
@@ -53,9 +53,9 @@ exports.changeProjectStatus  = catchAsyncError(async(projectId,projectStatus)=>{
    finally{
     await client.close()
    }
-})
+}
 
-exports.addMembers = catchAsyncError(async(projectId, userId)=>{
+exports.addMembers = async(projectId, userId)=>{
   const{client, db} = await  dbConnect()
   try{
     const projects = db.collection("projects")
@@ -65,7 +65,7 @@ exports.addMembers = catchAsyncError(async(projectId, userId)=>{
   finally{
     await client.close()
   }
-})
+}
 exports.deleteProject  = async(projectId) =>{
   const{client, db}  = await  dbConnect()
   try{
@@ -110,4 +110,17 @@ exports.searchProjectCount  = async(userId, query) =>{
    }
 }
 
-
+exports.findUserProjects = async (userId) => {
+  let {client, db}  = await  dbConnect()
+  try {
+    let projects = db.collection("projects")
+    let result = await projects.find({ ownerId: userId }).toArray()
+    return result
+  }
+  catch (err) {
+    throw new Error(err)
+  }
+  finally {
+    await client.close()
+  }
+}
